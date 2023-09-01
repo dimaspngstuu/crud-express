@@ -98,13 +98,62 @@ app.put("/api/products/:id", (req, res) => {
     
 })
 //update specific product (using PATCH method)
+app.patch("/api/products/:id", (req, res) => {
+    const index = products.findIndex((i) => i.id === req.params.id);
+
+    if(index === -1) {
+        return res.json({
+            message: "this product not found using this ID"
+        })
+    }
+
+    let updateProduct = {
+        ...products[index],
+        ...req.body
+    }
+
+    products[index] = updateProduct;
+
+
+    res.json({
+        message: "data has been changed",
+        product:updateProduct
+    });
+})
 //delete specific product
+app.delete("/api/products/:id", (req,res) => {
+  const product = products.find((i) => i.id === req.params.id);
+  const index = products.findIndex((k) => k.id === req.params.id);
+
+  if(!product) {
+    res.status(404).send({
+        message: "product is not found using this ID"
+    })
+  } else {
+    products.splice(index,1);
+    res.status(200).json({
+        message: `product with ID ${product.id} is deleted`,
+        product: products
+    })
+  }
+})
 //delete All product data
+app.delete("/api/products", (req,res) => {
+    products.splice(0);
+    return res.json({
+        message: "all products was deleted",
+        product: products
+    })
+})
 
 
+
+
+//function using validation
 app.listen(8000, (req,res) => {
     console.log("server running in port 8000");
 });
+
 
 const validation = (body) => {
     const schema = Joi.object({
