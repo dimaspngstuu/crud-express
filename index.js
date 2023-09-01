@@ -114,3 +114,6 @@ const validation = (body) => {
 
     return schema.validate(body);
 }
+
+
+module.exports = app;
